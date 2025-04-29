@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Tastur Connect - Início{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<div class="home-container text-center">
+    <div class="card p-5">
+        <h1 class="display-4">TASTUR CONNECT</h1>
+        <p class="lead">Seja bem vindo</p>
+        
+        <div class="home-buttons">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <a href="{% url 'core:login_colaborador' %}" class="btn btn-primary home-button mb-3">Colaborador</a>
+                    <a href="{% url 'core:login_cliente' %}" class="btn btn-secondary home-button">Cliente</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

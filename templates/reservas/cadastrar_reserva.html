@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Cadastrar Reserva{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Preencher nome do cliente automaticamente ao selecionar CPF
+    const cpfSelect = document.getElementById('id_cpf_cliente');
+    const nomeInput = document.getElementById('id_nome_cliente');
+    
+    if (cpfSelect && nomeInput) {
+        cpfSelect.addEventListener('change', function() {
+            const selectedOption = cpfSelect.options[cpfSelect.selectedIndex];
+            if (selectedOption.text) {
+                const clienteInfo = selectedOption.text.split(' - ');
+                if (clienteInfo.length > 0) {
+                    nomeInput.value = clienteInfo[0];
+                }
+            }
+        });
+    }
+    
+    // Preencher nome fantasia do parceiro automaticamente ao selecionar CNPJ
+    const cnpjSelect = document.getElementById('id_cnpj');
+    const nomeFantasiaInput = document.getElementById('id_nome_fantasia');
+    
+    if (cnpjSelect && nomeFantasiaInput) {
+        cnpjSelect.addEventListener('change', function() {
+            const selectedOption = cnpjSelect.options[cnpjSelect.selectedIndex];
+            if (selectedOption.text) {
+                const parceiroInfo = selectedOption.text.split(' - ');
+                if (parceiroInfo.length > 0) {
+                    nomeFantasiaInput.value = parceiroInfo[0];
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h2 class="text-center mb-4">Efetuar reserva</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.nome_cliente|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.cpf_cliente|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.data_entrada|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.colaborador_responsavel|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.nome_fantasia|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.cnpj|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.origem|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.destino|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.data_ida|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.data_volta|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ form.comentarios_adicionais|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a href="{% url 'reservas:consultar_reserva' %}" class="btn btn-secondary">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
