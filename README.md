@@ -32,7 +32,7 @@ cd tastur
 
 ### 2. Configurar ambiente virtual
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
 venv\Scripts\activate  # Windows
