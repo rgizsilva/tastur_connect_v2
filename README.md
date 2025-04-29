@@ -74,7 +74,11 @@ python manage.py createsuperuser
 ```bash
 python manage.py runserver
 ```
+### 9. Acessar painel admin
+http://127.0.0.1:8000/admin/
 
+### 10. Acessa tela de login
+http://127.0.0.1:8000
 ## Funcionalidades
 
 ### Colaboradores
