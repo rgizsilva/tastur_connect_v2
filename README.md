@@ -26,8 +26,8 @@ O sistema utiliza PostgreSQL como banco de dados, com as seguintes tabelas princ
 
 ### 1. Clonar o repositório
 ```bash
-git clone <repositório>
-cd tastur_connect
+git clone tastur
+cd tastur
 ```
 
 ### 2. Configurar ambiente virtual
