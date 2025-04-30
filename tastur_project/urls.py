@@ -9,6 +9,7 @@ urlpatterns = [
     path('clientes/', include('clientes.urls')),
     path('parceiros/', include('parceiros.urls')),
     path('reservas/', include('reservas.urls')),
+    path('select2/', include('django_select2.urls')),
 ]
 
 if settings.DEBUG:

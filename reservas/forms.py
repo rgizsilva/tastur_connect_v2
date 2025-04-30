@@ -3,32 +3,49 @@ from django import forms
 from .models import Reserva
 from clientes.models import Cliente
 from parceiros.models import Parceiro
+from django_select2 import forms as s2forms # Importar o widget
+
+class ClienteWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "cpf_cliente__icontains",
+        "nome_completo__icontains",
+    ]
+
+class ParceiroWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "cnpj__icontains",
+        "nome_fantasia__icontains",
+    ]
 
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        # Excluir campos que serão preenchidos na view
-        exclude = ('numero_reserva', 'data_entrada', 'nome_cliente', 'nome_fantasia')
+        exclude = (
+            'numero_reserva', 
+            'data_entrada', 
+            'nome_cliente', 
+            'nome_fantasia', 
+            'colaborador_responsavel'
+        )
         widgets = {
             'data_ida': forms.DateInput(attrs={'type': 'date'}),
             'data_volta': forms.DateInput(attrs={'type': 'date'}),
             'comentarios_adicionais': forms.Textarea(attrs={'rows': 4}),
+            # Usar os widgets do Select2
+            'cpf_cliente': ClienteWidget,
+            'cnpj': ParceiroWidget,
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-        self.fields['cpf_cliente'].queryset = Cliente.objects.all()
-        self.fields['cpf_cliente'].label = "Cliente (Selecione pelo CPF)" 
-        self.fields['cpf_cliente'].empty_label = "Selecione um Cliente"
+        # Ajustar rótulos e tornar parceiro opcional
+        self.fields['cpf_cliente'].label = "Cliente (Digite CPF ou Nome para buscar)"
+        self.fields['cpf_cliente'].queryset = Cliente.objects.all() # Necessário para ModelChoiceField
+        self.fields['cpf_cliente'].required = True # Cliente é obrigatório
 
-        self.fields['cnpj'].queryset = Parceiro.objects.all()
-        self.fields['cnpj'].label = "Parceiro (Selecione pelo CNPJ)" 
-        self.fields['cnpj'].empty_label = "Selecione um Parceiro"
-
-        
-        self.fields['colaborador_responsavel'].widget = forms.HiddenInput()
-        self.fields['colaborador_responsavel'].required = False
+        self.fields['cnpj'].label = "Parceiro (Digite CNPJ ou Nome Fantasia para buscar - Opcional)"
+        self.fields['cnpj'].queryset = Parceiro.objects.all() # Necessário para ModelChoiceField
+        self.fields['cnpj'].required = False # Parceiro é opcional
 
 
 class ConsultaReservaForm(forms.Form):

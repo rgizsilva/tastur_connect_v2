@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'clientes',
     'parceiros',
     'reservas',
+    'django_select2',
 ]
 
 MIDDLEWARE = [
