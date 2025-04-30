@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV=/mnt/c/Users/regi_/Downloads/Tastur/venv
+VIRTUAL_ENV=/mnt/c/Users/regi_/Documents/projeto_integrador/tastur/venv
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
