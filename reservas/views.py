@@ -13,25 +13,25 @@ def cadastrar_reserva(request):
         form = ReservaForm(request.POST)
         if form.is_valid():
             try:
-                # Pega as instâncias selecionadas (Parceiro pode ser None)
+                # Pega as instâncias selecionadas 
                 cliente_instance = form.cleaned_data['cpf_cliente']
-                parceiro_instance = form.cleaned_data.get('cnpj') # Usar .get() para o caso de ser None
+                parceiro_instance = form.cleaned_data.get('cnpj') 
 
                 reserva = form.save(commit=False)
 
-                # Atribui Cliente (obrigatório)
+               
                 reserva.cpf_cliente = cliente_instance
                 reserva.nome_cliente = cliente_instance.nome_completo
 
-                # Atribui Parceiro (opcional)
+                
                 if parceiro_instance:
                     reserva.cnpj = parceiro_instance
                     reserva.nome_fantasia = parceiro_instance.nome_fantasia
                 else:
-                    reserva.cnpj = None # Garante que seja None se não selecionado
-                    reserva.nome_fantasia = "" # Ou algum valor padrão
+                    reserva.cnpj = None 
+                    reserva.nome_fantasia = "" 
 
-                # Define o colaborador responsável
+                
                 if request.user.is_authenticated:
                     reserva.colaborador_responsavel = request.user.get_full_name() or request.user.username
                 else:
@@ -40,7 +40,7 @@ def cadastrar_reserva(request):
 
                 reserva.save()
 
-                # Atualiza o status do cliente
+                
                 cliente_instance.possui_reserva = True
                 cliente_instance.save()
 
@@ -54,7 +54,7 @@ def cadastrar_reserva(request):
             error_list = "; ".join([f"{field}: {error[0]}" for field, error in form.errors.items()])
             messages.error(request, f'Erro ao cadastrar reserva. Verifique os dados: {error_list}')
             print(f"Erro no formulário de reserva: {form.errors}")
-    else: # GET Request
+    else: 
         form = ReservaForm()
 
     return render(request, 'reservas/cadastrar_reserva.html', {'form': form})
@@ -62,7 +62,7 @@ def cadastrar_reserva(request):
 @login_required
 def consultar_reserva(request):
     form = ConsultaReservaForm(request.GET or None)
-    reservas = Reserva.objects.all()  # Começa com todas as reservas
+    reservas = Reserva.objects.all()  
 
     if form.is_valid():
         numero_reserva = form.cleaned_data.get('numero_reserva')

@@ -39,8 +39,6 @@ def login_cliente(request):
             cpf = form.cleaned_data.get('cpf')
             try:
                 cliente = Cliente.objects.get(cpf_cliente=cpf)
-                # Aqui normalmente verificaríamos a senha, mas como não temos senha no modelo Cliente,
-                # apenas verificamos se o CPF existe
                 request.session['cliente_cpf'] = cpf
                 request.session['cliente_nome'] = cliente.nome_completo
                 messages.success(request, f'Bem-vindo, {cliente.nome_completo}!')

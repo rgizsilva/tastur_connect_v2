@@ -21,6 +21,6 @@ class Reserva(models.Model):
     def __str__(self):
         return f"Reserva {self.numero_reserva} - {self.nome_cliente}"
 
-    # Remover a geração manual de numero_reserva, pois já está configurado no campo como 'default'
+    
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # O campo numero_reserva será gerado automaticamente
+        super().save(*args, **kwargs)  

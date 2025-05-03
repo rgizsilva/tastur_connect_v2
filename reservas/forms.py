@@ -38,14 +38,13 @@ class ReservaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Ajustar rótulos e tornar parceiro opcional
         self.fields['cpf_cliente'].label = "Cliente (Digite CPF ou Nome para buscar)"
-        self.fields['cpf_cliente'].queryset = Cliente.objects.all() # Necessário para ModelChoiceField
-        self.fields['cpf_cliente'].required = True # Cliente é obrigatório
+        self.fields['cpf_cliente'].queryset = Cliente.objects.all() 
+        self.fields['cpf_cliente'].required = True 
 
         self.fields['cnpj'].label = "Parceiro (Digite CNPJ ou Nome Fantasia para buscar - Opcional)"
-        self.fields['cnpj'].queryset = Parceiro.objects.all() # Necessário para ModelChoiceField
-        self.fields['cnpj'].required = False # Parceiro é opcional
+        self.fields['cnpj'].queryset = Parceiro.objects.all() 
+        self.fields['cnpj'].required = False 
 
 
 class ConsultaReservaForm(forms.Form):

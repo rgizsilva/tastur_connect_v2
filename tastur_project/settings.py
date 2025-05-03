@@ -1,18 +1,18 @@
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -63,15 +63,16 @@ WSGI_APPLICATION = 'tastur_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Adventureworks',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '172.27.0.101',
-        'PORT': '5433',
+        'NAME': 'tastur',              
+        'USER': 'tastur_user',         
+        'PASSWORD': 'sua_senha_segura',
+        'HOST': 'friskily-speedy-schnauzer.data-1.use1.tembo.io',  
+        'PORT': '5432',                
     }
 }
 
-# Password validation
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -87,25 +88,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Default primary key field type
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Crispy Forms
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# Login URL
+
 LOGIN_URL = 'core:login_colaborador'
 LOGIN_REDIRECT_URL = 'core:selecao_colaborador'
 LOGOUT_REDIRECT_URL = 'core:home'
