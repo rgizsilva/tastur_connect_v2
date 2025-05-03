@@ -43,41 +43,14 @@ venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-### 4. Configurar banco de dados PostgreSQL
-```bash
-sudo -u postgres psql
-CREATE USER tastur_user WITH PASSWORD 'tastur_password';
-CREATE DATABASE tastur_db OWNER tastur_user;
-GRANT ALL PRIVILEGES ON DATABASE tastur_db TO tastur_user;
-\q
-```
-
-### 5. Configurar variáveis de ambiente (opcional)
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-```
-SECRET_KEY=sua_chave_secreta
-DEBUG=False
-DATABASE_URL=postgres://tastur_user:tastur_password@localhost:5432/tastur_db
-```
-
-### 6. Aplicar migrações
-```bash
-python manage.py migrate
-```
-
-### 7. Criar superusuário
-```bash
-python manage.py createsuperuser
-```
-
-### 8. Iniciar servidor
+### 4. Iniciar servidor
 ```bash
 python manage.py runserver
 ```
-### 9. Acessar painel admin
+### 5. Acessar painel admin
 http://127.0.0.1:8000/admin/
 
-### 10. Acessa tela de login
+### 6. Acessa tela de login
 http://127.0.0.1:8000
 ## Funcionalidades
 
