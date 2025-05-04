@@ -1,23 +1,22 @@
-# reservas/forms.py
 from django import forms
 from .models import Reserva
 from clientes.models import Cliente
 from parceiros.models import Parceiro
-from django_select2 import forms as s2forms # Importar o widget
-
-class ClienteWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "cpf_cliente__icontains",
-        "nome_completo__icontains",
-    ]
-
-class ParceiroWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "cnpj__icontains",
-        "nome_fantasia__icontains",
-    ]
 
 class ReservaForm(forms.ModelForm):
+    cpf_cliente = forms.CharField(
+        label="CPF do Cliente",
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    
+    cnpj = forms.CharField(
+        max_length=14, 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}), 
+        label="CNPJ do Parceiro"
+    )
+
     class Meta:
         model = Reserva
         exclude = (
@@ -25,29 +24,43 @@ class ReservaForm(forms.ModelForm):
             'data_entrada', 
             'nome_cliente', 
             'nome_fantasia', 
-            'colaborador_responsavel'
+            'colaborador_responsavel',
+            'cpf_cliente',
         )
         widgets = {
-            'data_ida': forms.DateInput(attrs={'type': 'date'}),
-            'data_volta': forms.DateInput(attrs={'type': 'date'}),
-            'comentarios_adicionais': forms.Textarea(attrs={'rows': 4}),
-            # Usar os widgets do Select2
-            'cpf_cliente': ClienteWidget,
-            'cnpj': ParceiroWidget,
+            'data_ida': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}), 
+            'data_volta': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}), 
+            'comentarios_adicionais': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
         }
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['cpf_cliente'].label = "Cliente (Digite CPF ou Nome para buscar)"
-        self.fields['cpf_cliente'].queryset = Cliente.objects.all() 
+        self.fields['cpf_cliente'].label = "CPF do Cliente"
         self.fields['cpf_cliente'].required = True 
 
-        self.fields['cnpj'].label = "Parceiro (Digite CNPJ ou Nome Fantasia para buscar - Opcional)"
-        self.fields['cnpj'].queryset = Parceiro.objects.all() 
-        self.fields['cnpj'].required = False 
+        self.fields['cnpj'].label = "CNPJ do Parceiro"
+        self.fields['cnpj'].required = True 
+
+    def clean_cnpj(self):
+        cnpj = self.cleaned_data.get('cnpj')
+        if cnpj:
+            try:
+                parceiro = Parceiro.objects.get(cnpj=cnpj)
+            except Parceiro.DoesNotExist:
+                raise forms.ValidationError('Parceiro não encontrado.')
+            return parceiro  
+        return None
+    
+    
+    def clean_cpf_cliente(self):
+        cpf = self.cleaned_data.get('cpf_cliente')
+        if cpf:
+            if not Cliente.objects.filter(cpf_cliente=cpf).exists():
+                raise forms.ValidationError('Cliente não encontrado com esse CPF.')
+        return cpf
+
+
 
 
 class ConsultaReservaForm(forms.Form):
     numero_reserva = forms.CharField(max_length=10, required=False, label='Número da Reserva')
     cpf_cliente = forms.CharField(max_length=14, required=False, label='CPF do Cliente')
-

@@ -1,3 +1,4 @@
+# views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -6,72 +7,56 @@ from clientes.models import Cliente
 from parceiros.models import Parceiro
 from .forms import ReservaForm, ConsultaReservaForm
 
+# views.py
 @login_required
 def cadastrar_reserva(request):
-    """Cadastro de novas reservas (apenas para colaboradores)"""
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
+            reserva = form.save(commit=False)
+
+            # Buscar e associar o Cliente
+            cpf = form.cleaned_data['cpf_cliente']
             try:
-                # Pega as instâncias selecionadas 
-                cliente_instance = form.cleaned_data['cpf_cliente']
-                parceiro_instance = form.cleaned_data.get('cnpj') 
+                cliente = Cliente.objects.get(cpf_cliente=cpf)
+                reserva.cpf_cliente = cliente
+                reserva.nome_cliente = cliente.nome_completo  # Atribuindo automaticamente o nome do cliente
+            except Cliente.DoesNotExist:
+                form.add_error('cpf_cliente', 'Cliente não encontrado.')
+                return render(request, 'reservas/cadastrar_reserva.html', {'form': form})
 
-                reserva = form.save(commit=False)
+            # Agora o campo 'cnpj' recebe a instância de Parceiro, e não a string
+            parceiro = form.cleaned_data.get('cnpj')
+            if parceiro:  # Caso tenha um parceiro válido
+                reserva.cnpj = parceiro  # Atribui a instância de Parceiro diretamente
 
-               
-                reserva.cpf_cliente = cliente_instance
-                reserva.nome_cliente = cliente_instance.nome_completo
+            # Definir o colaborador responsável
+            reserva.colaborador_responsavel = request.user.username
 
-                
-                if parceiro_instance:
-                    reserva.cnpj = parceiro_instance
-                    reserva.nome_fantasia = parceiro_instance.nome_fantasia
-                else:
-                    reserva.cnpj = None 
-                    reserva.nome_fantasia = "" 
+            # Salvar a reserva
+            reserva.save()
 
-                
-                if request.user.is_authenticated:
-                    reserva.colaborador_responsavel = request.user.get_full_name() or request.user.username
-                else:
-                    messages.error(request, "Erro crítico: Usuário não autenticado.")
-                    return render(request, 'reservas/cadastrar_reserva.html', {'form': form})
+            # Redirecionar para a página de consulta de reservas
+            return redirect('reservas:consultar_reserva')  # Altere para consultar_reserva
 
-                reserva.save()
-
-                
-                cliente_instance.possui_reserva = True
-                cliente_instance.save()
-
-                messages.success(request, 'Reserva cadastrada com sucesso!')
-                return redirect('reservas:consultar_reserva')
-            
-            except Exception as e:
-                 messages.error(request, f'Ocorreu um erro inesperado ao salvar a reserva: {e}')
-                 print(f"Erro ao salvar reserva: {e}") 
-        else:
-            error_list = "; ".join([f"{field}: {error[0]}" for field, error in form.errors.items()])
-            messages.error(request, f'Erro ao cadastrar reserva. Verifique os dados: {error_list}')
-            print(f"Erro no formulário de reserva: {form.errors}")
-    else: 
+    else:
         form = ReservaForm()
 
     return render(request, 'reservas/cadastrar_reserva.html', {'form': form})
 
+
+
+
 @login_required
 def consultar_reserva(request):
-    form = ConsultaReservaForm(request.GET or None)
+    form = ConsultaReservaForm(request.GET or None)  
     reservas = Reserva.objects.all()  
 
     if form.is_valid():
-        numero_reserva = form.cleaned_data.get('numero_reserva')
-        cpf_cliente = form.cleaned_data.get('cpf_cliente')
+        cpf_cliente = form.cleaned_data.get('cpf_cliente')  
 
-        if numero_reserva:
-            reservas = reservas.filter(numero_reserva=numero_reserva)
         if cpf_cliente:
-            reservas = reservas.filter(cpf_cliente__cpf=cpf_cliente)
+            reservas = reservas.filter(cpf_cliente__cpf_cliente=cpf_cliente)
 
     return render(request, 'reservas/consultar_reserva.html', {'form': form, 'reservas': reservas})
 

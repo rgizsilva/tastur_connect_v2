@@ -11,7 +11,7 @@ class Reserva(models.Model):
     cpf_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='reservas')
     colaborador_responsavel = models.CharField(max_length=100)
     nome_fantasia = models.CharField(max_length=100)
-    cnpj = models.ForeignKey(Parceiro,null=True,on_delete=models.CASCADE, related_name='reservas')
+    cnpj = models.ForeignKey(Parceiro,null=False,on_delete=models.CASCADE, related_name='reservas')
     origem = models.CharField(max_length=100)
     destino = models.CharField(max_length=100)
     data_ida = models.DateField()
