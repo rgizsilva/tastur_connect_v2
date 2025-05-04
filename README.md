@@ -48,9 +48,12 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 ### 5. Acessar painel admin
+python manage.py createsuperuser
+
+### 6. Criar super user para o painel Django
 http://127.0.0.1:8000/admin/
 
-### 6. Acessa tela de login
+### 7. Acessa tela de login
 http://127.0.0.1:8000
 ## Funcionalidades
 

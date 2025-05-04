@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Parceiro
 from .forms import ParceiroForm, ConsultaParceiroForm
+import re
 
 @login_required
 def cadastrar_parceiro(request):
@@ -24,14 +25,15 @@ def consultar_parceiro(request):
     """Consulta de parceiros (apenas para colaboradores)"""
     form = ConsultaParceiroForm(request.GET or None)
     parceiros = []
-    
+
     if form.is_valid() and request.GET:
         cnpj = form.cleaned_data.get('cnpj')
         if cnpj:
-            parceiros = Parceiro.objects.filter(cnpj__icontains=cnpj)
+            cnpj_clean = re.sub(r'\D', '', cnpj) 
+            parceiros = Parceiro.objects.filter(cnpj__regex=rf'{cnpj_clean}')
         else:
             parceiros = Parceiro.objects.all()
-    
+
     return render(request, 'parceiros/consultar_parceiro.html', {
         'form': form,
         'parceiros': parceiros

@@ -64,8 +64,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tastur',              
-        'USER': 'tastur_user',         
-        'PASSWORD': 'sua_senha_segura',
+        'USER': 'postgres',         
+        'PASSWORD': 'syF5BNBzS2owQUcn',
         'HOST': 'friskily-speedy-schnauzer.data-1.use1.tembo.io',  
         'PORT': '5432',                
     }

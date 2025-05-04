@@ -1,4 +1,6 @@
+import re
 from django.db import models
+
 
 class Parceiro(models.Model):
     cnpj = models.CharField(max_length=18, primary_key=True)
@@ -13,6 +15,10 @@ class Parceiro(models.Model):
     telefone = models.CharField(max_length=15)
     celular = models.CharField(max_length=15)
     email = models.EmailField()
-    
+
+    def save(self, *args, **kwargs):
+        self.cnpj = re.sub(r'\D', '', self.cnpj)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.nome_fantasia} - {self.cnpj}"
