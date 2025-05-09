@@ -30,10 +30,7 @@ def consultar_cliente(request):
         if form.is_valid():
             cpf_input = form.cleaned_data.get('cpf')
             if cpf_input:
-                
-                cpf_input = re.sub(r'\D', '', cpf_input)
-
-                
+                cpf_input = form.cleaned_data.get('cpf')
                 todos_clientes = Cliente.objects.all()
                 clientes = [
                     cliente for cliente in todos_clientes
