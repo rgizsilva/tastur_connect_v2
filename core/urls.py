@@ -11,4 +11,7 @@ urlpatterns = [
     path('selecao/colaborador/', views.selecao_colaborador, name='selecao_colaborador'),
     path('selecao/cliente/', views.selecao_cliente, name='selecao_cliente'),
     path('colaborador/cadastrar/', views.cadastrar_colaborador, name='cadastrar_colaborador'),
+    path('cliente/reservas/', views.consultar_reserva_cliente, name='consultar_reserva_cliente'),
+    path('reservas/pdf/<str:numero_reserva>/', views.gerar_pdf_reserva, name='gerar_pdf_reserva'),
 ]
+
