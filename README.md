@@ -148,9 +148,9 @@ A aplicação estará disponível em:
 1. Acesse o painel admin e faça login com o superuser criado.
 2. Cadastre **colaboradores**, **clientes**, **parceiros** e **reservas**.
 3. Remova ou edite reservas conforme necessário.
-4. Teste os fluxos como **usuário cliente** também, fazendo login via **CPF**.
+4. Teste os fluxos como **usuário cliente** também, fazendo login via **NOME** ou **CPF** .
 
-> ✅ **Importante:** Tanto o colaborador quanto o cliente utilizam o **CPF como login** no sistema.
+> ✅ **Importante:** Tanto o colaborador quanto o cliente utilizam o nome de user que você cadastrou para logar no sistema.
 
 ---
 
