@@ -35,6 +35,8 @@
                             <th>Destino</th>
                             <th>Data Ida</th>
                             <th>Data Volta</th>
+                            <th>Última Atualização</th>
+                            <th>Comentários</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -48,6 +50,16 @@
                             <td>{{ reserva.destino }}</td>
                             <td>{{ reserva.data_ida|date:"d/m/Y" }}</td>
                             <td>{{ reserva.data_volta|date:"d/m/Y" }}</td>
+                            <td>{{ reserva.updated_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if reserva.comentarios_adicionais %}
+                                    <span title="{{ reserva.comentarios_adicionais }}">
+                                        {{ reserva.comentarios_adicionais|truncatechars:30 }}
+                                    </span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{% url 'reservas:editar_reserva' reserva.numero_reserva %}" class="btn btn-sm btn-secondary">Editar</a>
                                 <a href="{% url 'reservas:excluir_reserva' reserva.numero_reserva %}" class="btn btn-sm btn-danger">Excluir</a>

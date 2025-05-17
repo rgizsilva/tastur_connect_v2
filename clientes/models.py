@@ -13,6 +13,7 @@ class Cliente(models.Model):
     telefone = models.CharField(max_length=15)
     celular = models.CharField(max_length=15)
     possui_reserva = models.BooleanField(default=False)
+    senha = models.CharField(max_length=50, blank=True, null=True, verbose_name="Senha de acesso")
     
     def __str__(self):
         return f"{self.nome_completo} - {self.cpf_cliente}"

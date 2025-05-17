@@ -37,8 +37,8 @@
               <td>{{ reserva.numero_reserva }}</td>
               <td>{{ reserva.nome_cliente }}</td>
               <td>{{ reserva.nome_fantasia }}</td>
-              <td>{{ reserva.data_ida }}</td>
-              <td>{{ reserva.data_volta }}</td>
+              <td>{{ reserva.data_ida|date:"d/m/Y" }}</td>
+              <td>{{ reserva.data_volta|date:"d/m/Y" }}</td>
               <td>{{ reserva.status }}</td>
             </tr>
           {% endfor %}

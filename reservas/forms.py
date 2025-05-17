@@ -29,8 +29,18 @@ class ReservaForm(forms.ModelForm):
             'cpf_cliente',
         )
         widgets = {
-            'data_ida': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}), 
-            'data_volta': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}), 
+            'data_ida': forms.TextInput(
+                attrs={
+                    'class': 'form-control datepicker-br',
+                    'placeholder': 'DD/MM/AAAA'
+                }
+            ), 
+            'data_volta': forms.TextInput(
+                attrs={
+                    'class': 'form-control datepicker-br',
+                    'placeholder': 'DD/MM/AAAA'
+                }
+            ), 
             'comentarios_adicionais': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
         }
 

@@ -64,13 +64,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tastur',              
-        'USER': 'postgres',         
-        'PASSWORD': 'syF5BNBzS2owQUcn',
-        'HOST': 'friskily-speedy-schnauzer.data-1.use1.tembo.io',  
+        'USER': 'tastur',         
+        'PASSWORD': 'tastur123',
+        'HOST': 'localhost',  
         'PORT': '5432',                
     }
 }
-
 
 
 AUTH_PASSWORD_VALIDATORS = [

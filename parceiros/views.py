@@ -63,7 +63,6 @@ def excluir_parceiro(request, cnpj):
     parceiro = get_object_or_404(Parceiro, cnpj=cnpj)
     
     if request.method == 'POST':
-        # Verificar se o parceiro possui reservas antes de excluir
         if hasattr(parceiro, 'reservas') and parceiro.reservas.exists():
             messages.error(request, 'Não é possível excluir este parceiro pois ele possui reservas associadas.')
             return redirect('parceiros:consultar_parceiro')

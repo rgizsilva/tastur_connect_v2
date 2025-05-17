@@ -45,12 +45,17 @@ def login_cliente(request):
         form = ClienteLoginForm(request.POST)
         if form.is_valid():
             cpf = form.cleaned_data.get('cpf')
+            senha = form.cleaned_data.get('senha')
             try:
                 cliente = Cliente.objects.get(cpf_cliente=cpf)
-                request.session['cliente_cpf'] = cpf
-                request.session['cliente_nome'] = cliente.nome_completo
-                messages.success(request, f'Bem-vindo, {cliente.nome_completo}!')
-                return redirect('core:selecao_cliente')
+                
+                if cliente.senha == senha:
+                    request.session['cliente_cpf'] = cpf
+                    request.session['cliente_nome'] = cliente.nome_completo
+                    messages.success(request, f'Bem-vindo, {cliente.nome_completo}!')
+                    return redirect('core:selecao_cliente')
+                else:
+                    messages.error(request, 'Senha incorreta')
             except Cliente.DoesNotExist:
                 messages.error(request, 'CPF não encontrado')
         else:

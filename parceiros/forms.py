@@ -6,7 +6,12 @@ class ParceiroForm(forms.ModelForm):
         model = Parceiro
         fields = '__all__'
         widgets = {
-            'data_entrada': forms.DateInput(attrs={'type': 'date'}),
+            'data_entrada': forms.TextInput(
+                attrs={
+                    'class': 'form-control datepicker-br',
+                    'placeholder': 'DD/MM/AAAA'
+                }
+            ),
         }
 
 class ConsultaParceiroForm(forms.Form):

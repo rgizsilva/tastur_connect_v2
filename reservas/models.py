@@ -17,6 +17,8 @@ class Reserva(models.Model):
     data_ida = models.DateField()
     data_volta = models.DateField()
     comentarios_adicionais = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
     
     def __str__(self):
         return f"Reserva {self.numero_reserva} - {self.nome_cliente}"

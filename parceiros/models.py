@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Parceiro(models.Model):
-    cnpj = models.CharField(max_length=18, primary_key=True)
+    cnpj = models.CharField(max_length=14, null=False, blank=False, default='00000000000000')
     nome_fantasia = models.CharField(max_length=100)
     data_entrada = models.DateField()
     endereco = models.CharField(max_length=100)

@@ -4,7 +4,30 @@
 
 {% block title %}Cadastrar Reserva{% endblock %}
 
-{# Removido o bloco extra_js que tentava preencher campos ocultos #}
+{% block extra_css %}
+<!-- Adicione o CSS do flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+{% block extra_js %}
+<!-- Adicione o JavaScript do flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar flatpickr para campos de data
+    flatpickr(".datepicker-br", {
+        dateFormat: "d/m/Y",
+        locale: "pt",
+        allowInput: true,
+        altInput: true,
+        altFormat: "d/m/Y",
+        disableMobile: true // Força o uso do flatpickr mesmo em dispositivos móveis
+    });
+});
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
