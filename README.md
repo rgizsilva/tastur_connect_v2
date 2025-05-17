@@ -154,6 +154,45 @@ A aplicação estará disponível em:
 
 ---
 
+👤 Adicionar Colaborador
+Ao adicionar um colaborador, é necessário criar um usuário associado a ele. Siga os passos abaixo:
+
+Acesse o painel admin: http://127.0.0.1:8000/admin/
+
+Vá para Colaboradores e clique em "Adicionar Colaborador".
+
+Na tela de adição de colaborador, haverá um campo chamado "User".
+
+Clique no ícone de "+" (lado direito do campo "User") para criar um novo usuário.
+
+📥 Tela "Adicionar Usuário"
+Preencha os seguintes campos:
+
+Usuário:
+Insira o CPF ou outro identificador (até 150 caracteres).
+Apenas letras, números e @/./+/-/_ são permitidos.
+
+Autenticação baseada em senha:
+Deixe como "Habilitado".
+
+Senha:
+A senha deve conter no mínimo 8 caracteres, não ser comum, e não pode ser apenas números.
+
+Confirmação de senha:
+Repita a mesma senha.
+
+⚠️ Após salvar o usuário, ele será vinculado automaticamente ao colaborador.
+
+Preencha os demais campos do colaborador normalmente:
+
+Nome completo
+
+Telefone
+
+Clique em Salvar.
+
+---
+
 ## 📂 Banco de Dados
 
 O sistema utiliza PostgreSQL como banco de dados, com as seguintes tabelas principais:
