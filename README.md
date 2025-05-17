@@ -35,7 +35,7 @@ Aplicativos principais:
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/tastur.git
+git clone https://github.com/rgizsilva/tastur.git
 cd tastur
 ```
 
