@@ -3,19 +3,59 @@ body {
     background-color: #f5f5f5;
     color: #333;
     font-family: 'Roboto', sans-serif;
+
+    background-image: url("/static/image/WALLPAPER GRUPO 2.jpg");
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+
+    margin: 0;
+    padding: 0;
 }
+
+
+p { 
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-wrapper{
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
 .navbar {
     background-color: #343a40;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    height: 60px;
+    overflow: hidden;
+}
+
+
+.navbar-brand {
+  font-size: 1.25rem;
+}
+
+.navbar-brand img {
+  max-height: 40px;
 }
 
 .card {
     background-color: #e9e9e9;
     border: none;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
     margin-bottom: 20px;
+        
 }
 
 .btn-primary {
@@ -72,9 +112,13 @@ body {
 .home-container {
     height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.home-container .card{
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
 }
 
 .home-buttons {
