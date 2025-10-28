@@ -1,17 +1,34 @@
+# tastur_project/settings.py
+
 import os
 from pathlib import Path
+import dj_database_url  # Ferramenta para configurar o DB a partir de uma URL
 
-
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- CONFIGURAÇÕES DE SEGURANÇA E AMBIENTE ---
 
-SECRET_KEY = 'django-insecure-your-secret-key-here'
+# SECRET_KEY: Lê a chave de uma variável de ambiente em produção.
+# Se não encontrar, usa uma chave insegura apenas para desenvolvimento local.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-here')
+
+# DEBUG: Fica como True localmente, mas será False no Render quando a
+# variável de ambiente 'DEBUG' for definida como 'False'.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+# ALLOWED_HOSTS: Configura os domínios permitidos.
+# No Render, ele pega o domínio automaticamente. Localmente, permite 'localhost'.
+ALLOWED_HOSTS = []
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+else:
+    # Para desenvolvimento local, se a variável do Render não existir
+    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
 
 
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
+# --- APLICAÇÕES E MIDDLEWARE ---
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,6 +48,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise: Para servir arquivos estáticos em produção de forma eficiente.
+    # Deve vir logo após o SecurityMiddleware.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,34 +79,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tastur_project.wsgi.application'
 
-# Database
+
+# --- BANCO DE DADOS ---
+
+# Esta configuração usa a variável de ambiente DATABASE_URL fornecida pelo Render.
+# Se ela não existir (localmente), ele usa as credenciais que você já tinha.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tastur',              
-        'USER': 'tastur',         
-        'PASSWORD': 'tastur123',
-        'HOST': 'localhost',  
-        'PORT': '5432',                
-    }
+    'default': dj_database_url.config(
+        # Fallback para suas configurações locais se DATABASE_URL não estiver definida
+        default='postgres://tastur:tastur123@localhost:5432/tastur',
+        conn_max_age=600  # Mantém as conexões abertas por 10 minutos
+    )
 }
 
 
+# --- VALIDAÇÃO DE SENHAS ---
+
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+
+# --- INTERNACIONALIZAÇÃO ---
 
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
@@ -94,17 +111,26 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# --- ARQUIVOS ESTÁTICOS (CSS, JavaScript, Imagens) ---
 
+STATIC_URL = '/static/'
+# Diretório onde o Django procura seus arquivos estáticos durante o desenvolvimento.
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Configuração específica para produção (quando DEBUG=False)
+if not DEBUG:
+    # Diretório para onde o `collectstatic` vai copiar todos os arquivos estáticos.
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Mecanismo de armazenamento do WhiteNoise, que comprime e gerencia os arquivos.
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# --- CONFIGURAÇÕES ADICIONAIS DO PROJETO ---
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
 
 LOGIN_URL = 'core:login_colaborador'
 LOGIN_REDIRECT_URL = 'core:selecao_colaborador'
