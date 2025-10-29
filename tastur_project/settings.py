@@ -2,12 +2,12 @@
 
 import os
 from pathlib import Path
-import dj_database_url  # Ferramenta para configurar o DB a partir de uma URL
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- CONFIGURAÇÕES DE SEGURANÇA E AMBIENTE ---
+# --- CONFIGURAÇÕES DE SEGURANça E AMBIENTE ---
 
 # SECRET_KEY: Lê a chave de uma variável de ambiente em produção.
 # Se não encontrar, usa uma chave insegura apenas para desenvolvimento local.
@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # WhiteNoise precisa ser listado aqui, mas geralmente após 'django.contrib.staticfiles'
+    'whitenoise.runserver_nostatic', # Adicionado para melhor compatibilidade em desenvolvimento
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -112,17 +114,18 @@ USE_TZ = True
 
 
 # --- ARQUIVOS ESTÁTICOS (CSS, JavaScript, Imagens) ---
+# --- SEÇÃO CORRIGIDA ---
 
 STATIC_URL = '/static/'
-# Diretório onde o Django procura seus arquivos estáticos durante o desenvolvimento.
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Configuração específica para produção (quando DEBUG=False)
-if not DEBUG:
-    # Diretório para onde o `collectstatic` vai copiar todos os arquivos estáticos.
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # Mecanismo de armazenamento do WhiteNoise, que comprime e gerencia os arquivos.
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Esta é a pasta para onde o `collectstatic` irá copiar todos os arquivos.
+# O WhiteNoise usará esta pasta para servir os arquivos em produção.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Esta linha ativa o armazenamento otimizado do WhiteNoise.
+# É crucial para que ele encontre e sirva os arquivos corretamente.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # --- CONFIGURAÇÕES ADICIONAIS DO PROJETO ---
