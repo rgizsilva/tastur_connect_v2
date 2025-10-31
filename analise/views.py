@@ -2,7 +2,7 @@
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from rest_framework import viewsets, status, mixins # <--- IMPORTAR MIXINS
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -12,24 +12,28 @@ from .models import AnaliseDados
 from .serializers import AnaliseDadosSerializer
 
 # -----------------------------------------------------------------------------
-# API VIEWSET - VERSÃO CORRIGIDA PARA MOSTRAR A AÇÃO POST
+# API VIEWSET - VERSÃO FINAL E CORRETA
 # -----------------------------------------------------------------------------
 
-# MUDANÇA PRINCIPAL: Em vez de ReadOnlyModelViewSet, vamos compor o nosso.
-class AnaliseDadosViewSet(mixins.ListModelMixin, # Adiciona a funcionalidade de listar (GET /dados/)
-                          viewsets.GenericViewSet): # A base para ViewSets customizados
+class AnaliseDadosViewSet(mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
     """
     API endpoint para visualizar e ATUALIZAR os dados de análise.
     - GET /api/analise/dados/ -> Retorna a análise mais recente.
     - POST /api/analise/dados/atualizar/ -> Gera um novo registro de análise.
     """
+    # --- A CORREÇÃO ESTÁ AQUI ---
+    # Adicione este atributo 'queryset'. Ele serve como uma "dica" para o router
+    # registrar a rota GET principal, mesmo que a lógica real esteja em get_queryset().
+    queryset = AnaliseDados.objects.all()
+    
     serializer_class = AnaliseDadosSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """
-        Este método é para a requisição GET.
-        Ele apenas LÊ e retorna o registro mais recente que já existe.
+        Este método continua sendo o responsável pela lógica do GET.
+        Ele sobrescreve o 'queryset' acima e retorna apenas o registro mais recente.
         """
         latest_analysis = AnaliseDados.objects.order_by('-data_analise').first()
         if latest_analysis:
@@ -39,7 +43,7 @@ class AnaliseDadosViewSet(mixins.ListModelMixin, # Adiciona a funcionalidade de 
     @action(detail=False, methods=['post'])
     def atualizar(self, request):
         """
-        Cria um novo registro de AnaliseDados com dados e data atuais.
+        Esta é a ação POST para criar um novo registro de análise.
         """
         try:
             novo_registro = AnaliseDados.objects.create(
