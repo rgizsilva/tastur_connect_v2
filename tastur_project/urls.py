@@ -13,7 +13,8 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')),
     path('select2/', include('django_select2.urls')),
     path('reserva/<int:reserva_id>/pdf/', views.gerar_pdf_reserva, name='gerar_pdf_reserva'),
-    path('api/analise/', include('analise.urls')),
+    path('api/analise/', include(('analise.urls', 'analise'), namespace='analise')),
+
 ]
 
 if settings.DEBUG:
