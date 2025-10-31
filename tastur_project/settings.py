@@ -4,10 +4,10 @@ import os
 from pathlib import Path
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- CONFIGURAÇÕES DE SEGURANÇA E AMBIENTE ---
+
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-here')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
@@ -20,26 +20,21 @@ else:
     ALLOWED_HOSTS.extend(['localhost', '127.0.0.1', '8000-i0r2kgzpz4wncs0ggucup-3029f0f6.manusvm.computer'])
 
 
-# --- APLICAÇÕES E MIDDLEWARE ---
-
 INSTALLED_APPS = [
-    # Apps do Django devem vir primeiro
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # WhiteNoise para servir estáticos
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     
-    # Apps de terceiros
     'crispy_forms',
     'crispy_bootstrap5',
     'rest_framework',
     'django_select2',
 
-    # Seus apps
     'core',
     'clientes',
     'parceiros',
@@ -49,7 +44,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise Middleware deve vir logo após o SecurityMiddleware
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,7 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'tastur_project.wsgi.application'
 
 
-# --- BANCO DE DADOS ---
+
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -91,7 +85,7 @@ DATABASES = {
 
 
 
-# --- VALIDAÇÃO DE SENHAS ---
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -101,27 +95,21 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# --- INTERNACIONALIZAÇÃO ---
-
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
 
-# --- ARQUIVOS ESTÁTICOS (CONFIGURAÇÃO FINAL E ROBUSTA) ---
-
 STATIC_URL = '/static/'
-# Diretório onde o `collectstatic` irá copiar todos os arquivos para produção.
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# Diretórios extras onde o Django deve procurar por arquivos estáticos.
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Mecanismo de armazenamento do WhiteNoise. Essencial para produção.
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-# --- CONFIGURAÇÕES ADICIONAIS DO PROJETO ---
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -4,13 +4,12 @@ import pytest
 from django.urls import reverse
 from django.contrib.auth.models import User
 from core.models import Colaborador
-from pyquery import PyQuery as pq # <--- IMPORTAR PYQUERY
+from pyquery import PyQuery as pq 
 
 pytestmark = pytest.mark.django_db
 
 
 def test_colaborador_model():
-    # ... (este teste já passa, sem alterações)
     user = User.objects.create_user(username='testuser', password='password123')
     colaborador = Colaborador.objects.create(
         user=user,
@@ -23,7 +22,6 @@ def test_colaborador_model():
 
 
 def test_home_view_loads_correctly(client):
-    # ... (este teste já passa, sem alterações)
     url = reverse('core:home')
     response = client.get(url)
     assert response.status_code == 200
@@ -41,13 +39,10 @@ def test_login_colaborador_view_loads_correctly(client):
     html = response.content.decode('utf-8')
     doc = pq(html)
     
-    # --- A CORREÇÃO FINAL ESTÁ AQUI ---
-    # O texto correto no seu template é sem o "de".
     assert "Login Colaborador" in doc('h2').text()
 
 
 def test_login_colaborador_success(client):
-    # ... (este teste já passa, sem alterações)
     username = 'colaborador_teste'
     password = 'senha_super_segura'
     user = User.objects.create_user(username=username, password=password, first_name='João')

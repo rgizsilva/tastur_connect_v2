@@ -1,7 +1,6 @@
 from django.db import models
 
 class AnaliseDados(models.Model):
-    # Campos que representam os dados de análise
     pacotes_vendidos = models.IntegerField(default=0, verbose_name="Quantidade de Pacotes Vendidos")
     idade_media_clientes = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, verbose_name="Idade Média dos Clientes")
     valor_medio_pacotes = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Valor Médio dos Pacotes")
@@ -12,9 +11,6 @@ class AnaliseDados(models.Model):
     class Meta:
         verbose_name = "Análise de Dados"
         verbose_name_plural = "Análises de Dados"
-        # Garante que haverá apenas uma linha de dados de análise
-        # Isso será útil se a tabela for usada como um cache de resultados
-        # de análise, que é o que parece ser o caso.
         unique_together = ('id',) 
 
     def __str__(self):

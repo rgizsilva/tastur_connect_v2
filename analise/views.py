@@ -11,10 +11,6 @@ import random
 from .models import AnaliseDados
 from .serializers import AnaliseDadosSerializer
 
-# -----------------------------------------------------------------------------
-# API VIEWSET - VERSÃO FINAL E CORRETA
-# -----------------------------------------------------------------------------
-
 class AnaliseDadosViewSet(mixins.ListModelMixin,
                           viewsets.GenericViewSet):
     """
@@ -22,9 +18,7 @@ class AnaliseDadosViewSet(mixins.ListModelMixin,
     - GET /api/analise/dados/ -> Retorna a análise mais recente.
     - POST /api/analise/dados/atualizar/ -> Gera um novo registro de análise.
     """
-    # --- A CORREÇÃO ESTÁ AQUI ---
-    # Adicione este atributo 'queryset'. Ele serve como uma "dica" para o router
-    # registrar a rota GET principal, mesmo que a lógica real esteja em get_queryset().
+
     queryset = AnaliseDados.objects.all()
     
     serializer_class = AnaliseDadosSerializer
@@ -32,8 +26,7 @@ class AnaliseDadosViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         """
-        Este método continua sendo o responsável pela lógica do GET.
-        Ele sobrescreve o 'queryset' acima e retorna apenas o registro mais recente.
+        método responsável pela lógica do GET.
         """
         latest_analysis = AnaliseDados.objects.order_by('-data_analise').first()
         if latest_analysis:
@@ -43,7 +36,7 @@ class AnaliseDadosViewSet(mixins.ListModelMixin,
     @action(detail=False, methods=['post'])
     def atualizar(self, request):
         """
-        Esta é a ação POST para criar um novo registro de análise.
+        POST para criar um novo registro de análise.
         """
         try:
             novo_registro = AnaliseDados.objects.create(
@@ -61,12 +54,9 @@ class AnaliseDadosViewSet(mixins.ListModelMixin,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-# -----------------------------------------------------------------------------
-# VIEW TRADICIONAL (PÁGINA HTML) - Opcional
-# -----------------------------------------------------------------------------
+
 @login_required
 def relatorio_analise(request):
-    # ... (esta view não precisa de alterações)
     try:
         dados_analise = AnaliseDados.objects.latest('data_analise')
     except AnaliseDados.DoesNotExist:

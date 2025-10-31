@@ -4,7 +4,7 @@ from django.db import migrations
 def popular_analise_dados(apps, schema_editor):
     AnaliseDados = apps.get_model('analise', 'AnaliseDados')
     
-    # Dados mocados conforme o pedido do usuário
+
     dados_mocados = {
         'pacotes_vendidos': 150,
         'idade_media_clientes': 35.75,
@@ -13,16 +13,15 @@ def popular_analise_dados(apps, schema_editor):
         'valor_maximo_pacote': 3500.00,
     }
 
-    # Cria uma instância do modelo com os dados mocados
-    # Usamos update_or_create para garantir que a linha exista ou seja atualizada
+
     AnaliseDados.objects.update_or_create(
-        id=1, # Usamos um ID fixo para garantir que só haja uma linha de dados de análise
+        id=1, 
         defaults=dados_mocados
     )
 
 def reverter_popular_analise_dados(apps, schema_editor):
     AnaliseDados = apps.get_model('analise', 'AnaliseDados')
-    # Remove a linha de dados mocados
+
     AnaliseDados.objects.filter(id=1).delete()
 
 class Migration(migrations.Migration):

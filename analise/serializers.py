@@ -4,7 +4,6 @@ from .models import AnaliseDados
 class AnaliseDadosSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnaliseDados
-        # Os campos correspondem exatamente ao seu modelo
         fields = [
             'id', 
             'data_analise', 

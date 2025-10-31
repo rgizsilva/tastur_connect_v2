@@ -17,7 +17,7 @@
             <hr>
 
             <div class="text-center mt-3">
-                <!-- O botão agora apenas busca o último relatório -->
+                
                 <button id="buscar-analise-btn" class="btn btn-info btn-lg">
                     Buscar Última Análise
                 </button>
@@ -45,16 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const spinner = document.getElementById('loading-spinner');
 
     buscarBtn.addEventListener('click', function() {
-        // Mostra o spinner de carregamento
+        
         resultadoContainer.style.display = 'block';
         spinner.style.display = 'block';
         resultadoContainer.innerHTML = '';
         resultadoContainer.appendChild(spinner);
 
-        // URL da API de LEITURA (GET)
+        
         const getUrl = '/api/analise/dados/';
 
-        // --- LÓGICA SIMPLIFICADA: APENAS UMA CHAMADA GET ---
+        
         fetch(getUrl)
             .then(response => {
                 if (!response.ok) {
@@ -64,10 +64,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 spinner.style.display = 'none';
-                const analise = data[0]; // A API GET retorna uma lista
+                const analise = data[0]; 
 
                 if (analise) {
-                    // (O código para renderizar o card continua o mesmo)
+                    
                     const valorMedio = parseFloat(analise.valor_medio_pacotes).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                     const valorMinimo = parseFloat(analise.valor_minimo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                     const valorMaximo = parseFloat(analise.valor_maximo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
