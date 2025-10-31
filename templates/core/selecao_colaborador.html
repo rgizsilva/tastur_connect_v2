@@ -1,20 +1,132 @@
 {% extends 'base.html' %}
 
-{% block title %}Seleção Colaborador{% endblock %}
+{% block title %}Painel do Colaborador{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center  align-items-center min-vh-100">
-    <div class="col-md-6">
-        <div class="card p-4">
-            <h2 class="text-center mb-4">Selecione o objeto a sua solicitação</h2>
+<div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-8 col-lg-6">
+        <div class="card p-4 shadow-sm">
+            <h2 class="text-center mb-4">Painel do Colaborador</h2>
             
-            <div class="d-grid gap-3">
-                <a href="{% url 'clientes:consultar_cliente' %}" class="btn btn-primary">clientes</a>
-                <a href="{% url 'parceiros:consultar_parceiro' %}" class="btn btn-primary">parceiros</a>
-                <a href="{% url 'reservas:consultar_reserva' %}" class="btn btn-primary">reservas</a>
-                <a href="{% url 'analise:relatorio' %}" class="btn btn-success">Relatório de Análise</a>
+            <div class="d-grid gap-3 mb-4">
+                <a href="{% url 'clientes:consultar_cliente' %}" class="btn btn-primary">Gerenciar Clientes</a>
+                <a href="{% url 'parceiros:consultar_parceiro' %}" class="btn btn-primary">Gerenciar Parceiros</a>
+                <a href="{% url 'reservas:consultar_reserva' %}" class="btn btn-primary">Gerenciar Reservas</a>
             </div>
+
+            <hr>
+
+            <div class="text-center mt-3">
+                <!-- O botão que acionará a API -->
+                <button id="gerar-analise-btn" class="btn btn-success btn-lg">
+                    Gerar Nova Análise de Dados
+                </button>
+            </div>
+
+            <!-- A área onde os dados da análise aparecerão -->
+            <div id="analise-resultado-container" class="mt-4" style="display: none;">
+                <!-- O spinner de carregamento -->
+                <div id="loading-spinner" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p>Gerando nova análise...</p>
+                </div>
+                <!-- O conteúdo será inserido aqui pelo JavaScript -->
+            </div>
+
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const gerarBtn = document.getElementById('gerar-analise-btn');
+    const resultadoContainer = document.getElementById('analise-resultado-container');
+    const spinner = document.getElementById('loading-spinner');
+
+    // Pega o token CSRF de um cookie (método mais robusto)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    gerarBtn.addEventListener('click', function() {
+        // Mostra o container e o spinner de carregamento
+        resultadoContainer.style.display = 'block';
+        spinner.style.display = 'block';
+        resultadoContainer.innerHTML = ''; // Limpa resultados antigos
+        resultadoContainer.appendChild(spinner);
+
+        // URL para a ação de ATUALIZAÇÃO que criamos na API
+        const updateUrl = '/api/analise/dados/atualizar/';
+
+        // Faz a chamada POST para gerar a nova análise
+        fetch(updateUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken // Envia o token de segurança
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na rede: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(analise => { // A API agora retorna o objeto do novo registro
+            spinner.style.display = 'none';
+
+            if (analise) {
+                // Formata os números para o padrão brasileiro
+                const valorMedio = parseFloat(analise.valor_medio_pacotes).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const valorMinimo = parseFloat(analise.valor_minimo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const valorMaximo = parseFloat(analise.valor_maximo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const idadeMedia = parseFloat(analise.idade_media_clientes).toFixed(1);
+
+                // Cria o HTML do card de resultados
+                resultadoContainer.innerHTML = `
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Nova Análise Gerada com Sucesso!</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Pacotes Vendidos</p><h4>${analise.pacotes_vendidos}</h4></div>
+                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Idade Média</p><h4>${idadeMedia} anos</h4></div>
+                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Valor Médio</p><h4>${valorMedio}</h4></div>
+                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Extremos de Valor</p><h4>${valorMinimo} a ${valorMaximo}</h4></div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted text-center small">
+                            Análise gerada em: ${new Date(analise.data_analise).toLocaleString('pt-BR')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultadoContainer.innerHTML = '<div class="alert alert-warning">Nenhum dado de análise foi retornado.</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao gerar nova análise:', error);
+            spinner.style.display = 'none';
+            resultadoContainer.innerHTML = '<div class="alert alert-danger">Falha ao gerar a nova análise. Verifique o console para mais detalhes.</div>';
+        });
+    });
+});
+</script>
 {% endblock %}
