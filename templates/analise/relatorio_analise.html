@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Relatório de Análise - Tastur{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Relatório de Análise de Dados</h1>
+            {% if dados %}
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Dados da Última Análise ({{ dados.data_analise|date:"d/m/Y H:i" }})</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6 class="text-muted">Quantidade de Pacotes Vendidos</h6>
+                                <h4>{{ dados.pacotes_vendidos }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6 class="text-muted">Idade Média dos Clientes</h6>
+                                <h4>{{ dados.idade_media_clientes|floatformat:2 }} anos</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6 class="text-muted">Valor Médio dos Pacotes</h6>
+                                <h4>R$ {{ dados.valor_medio_pacotes|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6 class="text-muted">Valor Mínimo do Pacote</h6>
+                                <h4>R$ {{ dados.valor_minimo_pacote|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6 class="text-muted">Valor Máximo do Pacote</h6>
+                                <h4>R$ {{ dados.valor_maximo_pacote|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'core:selecao_colaborador' %}" class="btn btn-secondary">Voltar ao Menu</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                Nenhum dado de análise encontrado.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -17,7 +17,7 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
-    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
+    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1', '8000-i0r2kgzpz4wncs0ggucup-3029f0f6.manusvm.computer'])
 
 
 # --- APLICAÇÕES E MIDDLEWARE ---
@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # Apps de terceiros
     'crispy_forms',
     'crispy_bootstrap5',
+    'rest_framework',
     'django_select2',
 
     # Seus apps
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'clientes',
     'parceiros',
     'reservas',
+    'analise',
 ]
 
 MIDDLEWARE = [
@@ -86,6 +88,7 @@ DATABASES = {
         conn_max_age=600
     )
 }
+
 
 
 # --- VALIDAÇÃO DE SENHAS ---
