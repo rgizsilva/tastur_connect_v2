@@ -17,22 +17,19 @@
             <hr>
 
             <div class="text-center mt-3">
-                <!-- O botão que acionará a API -->
-                <button id="gerar-analise-btn" class="btn btn-success btn-lg">
-                    Gerar Nova Análise de Dados
+                <!-- O botão agora apenas busca o último relatório -->
+                <button id="buscar-analise-btn" class="btn btn-info btn-lg">
+                    Buscar Última Análise
                 </button>
             </div>
 
-            <!-- A área onde os dados da análise aparecerão -->
             <div id="analise-resultado-container" class="mt-4" style="display: none;">
-                <!-- O spinner de carregamento -->
                 <div id="loading-spinner" class="text-center">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Carregando...</span>
                     </div>
-                    <p>Gerando nova análise...</p>
+                    <p>Buscando dados...</p>
                 </div>
-                <!-- O conteúdo será inserido aqui pelo JavaScript -->
             </div>
 
         </div>
@@ -43,89 +40,66 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const gerarBtn = document.getElementById('gerar-analise-btn');
+    const buscarBtn = document.getElementById('buscar-analise-btn');
     const resultadoContainer = document.getElementById('analise-resultado-container');
     const spinner = document.getElementById('loading-spinner');
 
-    // Pega o token CSRF de um cookie (método mais robusto)
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
-
-    gerarBtn.addEventListener('click', function() {
-        // Mostra o container e o spinner de carregamento
+    buscarBtn.addEventListener('click', function() {
+        // Mostra o spinner de carregamento
         resultadoContainer.style.display = 'block';
         spinner.style.display = 'block';
-        resultadoContainer.innerHTML = ''; // Limpa resultados antigos
+        resultadoContainer.innerHTML = '';
         resultadoContainer.appendChild(spinner);
 
-        // URL para a ação de ATUALIZAÇÃO que criamos na API
-        const updateUrl = '/api/analise/dados/atualizar/';
+        // URL da API de LEITURA (GET)
+        const getUrl = '/api/analise/dados/';
 
-        // Faz a chamada POST para gerar a nova análise
-        fetch(updateUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken // Envia o token de segurança
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erro na rede: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(analise => { // A API agora retorna o objeto do novo registro
-            spinner.style.display = 'none';
+        // --- LÓGICA SIMPLIFICADA: APENAS UMA CHAMADA GET ---
+        fetch(getUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro ao buscar a análise: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                spinner.style.display = 'none';
+                const analise = data[0]; // A API GET retorna uma lista
 
-            if (analise) {
-                // Formata os números para o padrão brasileiro
-                const valorMedio = parseFloat(analise.valor_medio_pacotes).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                const valorMinimo = parseFloat(analise.valor_minimo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                const valorMaximo = parseFloat(analise.valor_maximo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                const idadeMedia = parseFloat(analise.idade_media_clientes).toFixed(1);
+                if (analise) {
+                    // (O código para renderizar o card continua o mesmo)
+                    const valorMedio = parseFloat(analise.valor_medio_pacotes).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    const valorMinimo = parseFloat(analise.valor_minimo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    const valorMaximo = parseFloat(analise.valor_maximo_pacote).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    const idadeMedia = parseFloat(analise.idade_media_clientes).toFixed(1);
 
-                // Cria o HTML do card de resultados
-                resultadoContainer.innerHTML = `
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">Nova Análise Gerada com Sucesso!</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Pacotes Vendidos</p><h4>${analise.pacotes_vendidos}</h4></div>
-                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Idade Média</p><h4>${idadeMedia} anos</h4></div>
-                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Valor Médio</p><h4>${valorMedio}</h4></div>
-                                <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Extremos de Valor</p><h4>${valorMinimo} a ${valorMaximo}</h4></div>
+                    resultadoContainer.innerHTML = `
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">Última Análise Encontrada</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Total de Pacotes Vendidos</p><h4>${analise.pacotes_vendidos}</h4></div>
+                                    <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Idade Média de Clientes</p><h4>${idadeMedia} anos</h4></div>
+                                    <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Valor Médio de Pacotes Vendidos</p><h4>${valorMedio}</h4></div>
+                                    <div class="col-sm-6 mb-3"><p class="text-muted mb-0">Extremos de Valores</p><h4>${valorMinimo} a ${valorMaximo}</h4></div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted text-center small">
+                                Análise de: ${new Date(analise.data_analise).toLocaleString('pt-BR')}
                             </div>
                         </div>
-                        <div class="card-footer text-muted text-center small">
-                            Análise gerada em: ${new Date(analise.data_analise).toLocaleString('pt-BR')}
-                        </div>
-                    </div>
-                `;
-            } else {
-                resultadoContainer.innerHTML = '<div class="alert alert-warning">Nenhum dado de análise foi retornado.</div>';
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao gerar nova análise:', error);
-            spinner.style.display = 'none';
-            resultadoContainer.innerHTML = '<div class="alert alert-danger">Falha ao gerar a nova análise. Verifique o console para mais detalhes.</div>';
-        });
+                    `;
+                } else {
+                    resultadoContainer.innerHTML = '<div class="alert alert-warning">Nenhum dado de análise foi encontrado no banco de dados.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Falha ao buscar dados:', error);
+                spinner.style.display = 'none';
+                resultadoContainer.innerHTML = '<div class="alert alert-danger">Ocorreu um erro ao buscar os dados.</div>';
+            });
     });
 });
 </script>
