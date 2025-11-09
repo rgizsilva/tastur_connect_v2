@@ -11,13 +11,16 @@ def cadastrar_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
-            cliente = form.save()
-            messages.success(request, 'Cliente cadastrado com sucesso!')
-            return redirect('clientes:consultar_cliente')
+            try:
+                form.save()
+                messages.success(request, 'Cliente cadastrado com sucesso!')
+                return redirect('clientes:consultar_cliente')
+            except Exception as e:
+                messages.error(request, f'Erro ao salvar cliente: {str(e)}')
         else:
             messages.error(request, 'Erro ao cadastrar cliente. Verifique os dados informados.')
     else:
-        form = ClienteForm()
+            form = ClienteForm()
     return render(request, 'clientes/cadastrar_cliente.html', {'form': form})
 
 @login_required

@@ -24,12 +24,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <a href="#conteudo" class="visually-hidden-focusable">Pular para o conteúdo principal</a>
+
     {% block navbar %}
     {% if user.is_authenticated or 'cliente_cpf' in request.session %}
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark" role="navigation" aria-label="Menu principal">
         <div class="container">
             <a class="navbar-brand" href="{% url 'core:home' %}">Tastur Connect</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -46,7 +49,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:logout' %}">Sair</a>
+                        <a class="nav-link" href="{% url 'core:logout' %}" aria-label="Encerrar sessão e sair do Tastur Connect">Sair</a>
                     </li>
                 </ul>
             </div>
@@ -55,22 +58,27 @@
     {% endif %}
     {% endblock %}
 
-    <div class="container">
-        {% if messages %}
-        <div class="row">
-            <div class="col-md-12">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
+    <main id="conteudo" tabindex="-1">
+        <div class="container">
+            {% if messages %}
+<div class="row" role="region" aria-label="Mensagens do sistema">
+    <div class="col-md-12">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mt-2" role="status" aria-live="assertive" tabindex="0">
+            {{ message }}
         </div>
-        {% endif %}
-
-        {% block content %}{% endblock %}
+        {% endfor %}
     </div>
+</div>
+{% endif %}
 
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer role="contentinfo" aria-label="Informações de rodapé" class="text-center mt-4 mb-2">
+        <p>&copy; 2025 Tastur Connect. Todos os direitos reservados.</p>   
+    </footer>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -87,5 +95,16 @@
     {{ form.media.js }}
 
     {% block extra_js %}{% endblock %}
-</body>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const alertBox = document.querySelector('.alert[role="status"]');
+    if (alertBox) {
+        setTimeout(() => alertBox.focus(), 200);
+    }
+});
+    </script>
+
+
+    </body>
 </html>
